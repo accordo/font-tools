@@ -1,3 +1,16 @@
+const char helpmsg[] = 
+"\n"
+"    dump1 0x6c38 36 simhei.ttf 0\n"
+"    ^      ^      ^   ^        ^\n"
+"    |      |      |   |        |\n"
+"    1      2      3   4        5\n"
+"\n"
+"    1. the name of this program.\n"
+"    2. unicode of the char you want to display, in hex or dec.\n"
+"    3. size of font.\n"
+"    4. font file.\n"
+"    5. human/machine readable.\n";
+
 /*
  * dump1.c
  * based on example1.c                                                         
@@ -145,8 +158,19 @@ int main( int argc, char *argv[])
         char    filename[255];
         double  angle;
         int     ch;
+        int     help;
 
         if(argc > 1) {
+                help = 0;
+
+                help |= strcmp(argv[1], "?") == 0;
+                help |= strcmp(argv[1], "--help") == 0;
+                help |= strcmp(argv[1], "-h") == 0;
+
+                if(help) {
+                        fprintf(stderr, "%s\n", helpmsg);
+                }
+
                 if(argv[1][0] == '0' && (argv[1][1] == 'x' || argv[1][1] == 'X')) 
                         ch = strtol(argv[1], NULL, 16);
                 else
@@ -189,7 +213,7 @@ int main( int argc, char *argv[])
 
         slot = face->glyph;
 
-for(ch=0x6c38; ch ;ch=0){
+for(ch; ch ;ch=0){
         error = FT_Load_Char( face, ch, FT_LOAD_RENDER );
         dump_bitmap( &slot->bitmap);
         if(!view) putchar('\n');
